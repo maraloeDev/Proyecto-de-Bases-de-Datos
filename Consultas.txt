@@ -1,0 +1,127 @@
+---------ENUNCIADOS CONSULTAS (join)---------------
+
+-- 1 Que taquillas se han dado con un numero de acceso a Ana Gomez
+select distinct acceso.numero_taquilla, usuario.nombre_usuario
+from acceso, usuario
+where acceso.dni_usuario = usuario.dni_usuario
+and usuario.nombre_usuario like '%Carlos%';
+
+-- 2 Que usuarios han hecho una reserva y que dia
+select distinct usuario.nombre_usuario, to_char(reserva.fecha_reserva, 'Day') "Dia"
+from usuario,reserva
+where usuario.dni_usuario = reserva.dni_usuario;
+
+-- 3 Sacar del animador Paco en qué eventos ha participado y la fecha cuando tuvo lugar. (animador tenga un numero de sala al que asistir)
+select distinct animacion.nombre_animador, evento.nombre_evento,evento.fecha_evento
+from animacion,evento, acceso
+where evento.fecha_evento = acceso.fecha_acceso
+and animacion.nombre_animador like 'Paco%';
+
+-- 4 Que usuarios han escogido un menu especificado en un mes.
+select distinct usuario.nombre_usuario, menu.nombre_menu, to_char (acceso.fecha_acceso, 'Day') "Dia"
+from usuario, menu, acceso
+where usuario.dni_usuario =  acceso.dni_usuario 
+and menu.nombre_menu like 'Menu Rojo'
+and acceso.fecha_acceso between '01-may-22' and '31-may-22';
+
+-- 5 Que usuarios han accedido mediante reserva a la taquilla.
+select distinct usuario.nombre_usuario
+from acceso, usuario, reserva
+where  acceso.dni_usuario = usuario.dni_usuario;
+
+-- 6 Mostrar los usuarios que han tenido un evento en un fecha determinada.
+select distinct usuario.nombre_usuario, evento.nombre_evento, evento.numero_sala,evento.fecha_evento
+from usuario, evento, acceso
+where evento.fecha_evento = acceso.fecha_acceso
+and evento.fecha_evento like '12-MAR-22';
+
+-- 7 Mostrar la informacion de los monitores que trabajen en la zona de juego denominada volcan.
+select distinct personal.nombre_personal, personal.puesto_personal, zona_juegos.nombre_zonajuego
+from zona_juegos, personal, acceso
+where zona_juegos.id_zonajuego = acceso.id_zonajuego
+and personal.puesto_personal like 'MONITOR'
+and  zona_juegos.nombre_zonajuego like 'VOLCAN';
+
+--8 Mostrar los usuarios del evento 'Cumpleaños Juan'
+select distinct usuario.nombre_usuario,evento.nombre_evento
+from usuario, evento, acceso
+where usuario.dni_usuario = acceso.dni_usuario
+and evento.nombre_evento like 'Cumpleaños Juan';
+
+-------ENUNCIADOS CONSULTAS (agrupadas)---------------
+
+--9 Saca cuantas taquillas han sido seleccionadas a personas que no han ido a un evento.
+
+--10 Saca cuantas personas han escogido (un menu en especifico), mediante agrupacion (group by).
+
+--11 Cuanto se ha pagado por evento.
+
+--12 En numero total de accesos de un usuario a la taquilla (agrupada).
+
+--13 Cuantos tutores tiene un usuario.
+
+--14 Cuantos usuarios tiene alguien a su cargo.
+
+--15 Saca el numero de participantes que haya en cada evento con el nombre del evento.
+
+--16 En cuantos eventos en total han participado cada animador (agrupada).
+
+--17 Saca descendentemente, los menus mas elegidos, con su cantidad de veces elegidas.
+
+--18 Saca ascendentemente, cuales son las taquillas menos seleccionadas, con su cantidad de veces seleccionada a personas.
+
+--19 Mostrar las alergias de los usuarios que hay en un evento, es decir, mostrar (agrupadas) los tipos de alergia que hay.
+
+--20 Mostrar el precio medio de todos los eventos realizados.
+
+--21 Mostrar el precio total de los eventos realizados.
+
+--22 Mostrar la media de precio de las personas que acceden a la zona de juego (juego libre).
+
+--23 Mostrar la taquilla más usada.
+
+--24 Mostrar los eventos junto a la cantidad de gente que fue, sin contar animadores.
+
+-------ENUNCIADOS CONSULTAS (subconsultas)---------------
+
+--25 Mostrar los eventos de un usuario especifico por nombre que no hayan contratado un menu especifico.
+
+--26 Mostrar los usuarios que no han reservado ningún evento.
+
+--27 Mostrar el usuario con mayor numero de eventos organizados.
+
+--28 Mostrar al animador en el que más eventos ha animado.
+
+--29 Mostrar el numero de taquilla de un usuario específico en una fecha determinada.
+
+--30 Mostrar los usuarios que no han accedido, ni reservado, ningún evento
+
+--31 Mostrar de los usuarios el nombre y sus tutores (nombre) que hayan tenido una taquilla en específico y hayan accedido por juego libre.
+
+--32 Mostrar la información del menú que más se haya pedido en los eventos.
+
+--33 Mostrar el menú que más se escogió en una fecha determinada, entrando por juego libre. 
+
+--34 Mostrar los menus que han escogido los usuarios menores de edad y que están tutorizados por 2 personas.
+
+------ENUNCIADOS CONSULTAS (Outer Join)---------------
+
+--35 Mostrar todos los usuarios junto al nombre de los que tienen a su cargo, mostrando también los que no tienen ninguno a su cargo.
+
+--36 Mostrar la informacion sobre el menu y los animadores junto a cada evento, mostrando 'Sin animador' si no ha habido animación.
+
+--37 Mostrar los eventos que hayan sido cumpleaños.
+
+-------ENUNCIADOS CONSULTAS (Inserciones)---------------
+
+--38 Insertar en una nueva tabla ALERGIAS, las alergias de los usuarios sin repetir.
+
+--39 Insertar un nuevo monitor con el nombre Julián Álvarez que viva en la misma calle que Juan Pérez.
+
+-------ENUNCIADOS CONSULTAS (Updates)---------------
+
+--40 Todos los usuarios que no tengan ninguna alergia, actualizan su valor a ‘Sin Alergia’.
+
+--41 Subir el precio del menú menos vendido en los eventos un 5 %.
+
+--42 Aplazar la fecha de un evento especificado 1 semana.
