@@ -1,6 +1,6 @@
 ---------ENUNCIADOS CONSULTAS (join)---------------
 
--- 1 Que taquillas se han dado con un numero de acceso a Ana Gomez
+-- 1 Que taquillas se han dado con un numero de acceso a Carlos
 select distinct acceso.numero_taquilla, usuario.nombre_usuario
 from acceso, usuario
 where acceso.dni_usuario = usuario.dni_usuario
@@ -36,7 +36,7 @@ where evento.fecha_evento = acceso.fecha_acceso
 and evento.fecha_evento like '12-MAR-22';
 
 -- 7 Mostrar la informacion de los monitores que trabajen en la zona de juego denominada volcan.
-select distinct personal.nombre_personal, personal.puesto_personal, zona_juegos.nombre_zonajuego
+select distinct personal.nombre_personal, zona_juegos.nombre_zonajuego
 from zona_juegos, personal, acceso
 where zona_juegos.id_zonajuego = acceso.id_zonajuego
 and personal.puesto_personal like 'MONITOR'
