@@ -51,36 +51,123 @@ and evento.nombre_evento like 'Cumpleaños Juan';
 -------ENUNCIADOS CONSULTAS (agrupadas)---------------
 
 --9 Saca cuantas taquillas han sido seleccionadas a personas que no han ido a un evento.
+select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizo"
+    from taquilla, usuario, acceso
+	where usuario.dni_usuario = acceso.dni_usuario
+		and acceso.numero_taquilla = taquilla.numero_taquilla
+    	and not exists (select usuario.dni_usuario from usuario, asiste 
+    					where usuario.dni_usuario = asiste.dni_usuario)
+	group by taquilla.numero_taquilla;
 
---10 Saca cuantas personas han escogido (un menu en especifico), mediante agrupacion (group by).
+--10 Saca cuantas personas han escogido cada menu, mediante agrupacion (group by). (enunciado modificado)
+select menu.nombre_menu "Menús", count(usuario.dni_usuario) "Veces seleccionado"  
+    from usuario, menu, asiste, evento
+    where usuario.dni_usuario = asiste.dni_usuario
+    	and asiste.id_evento = evento.id_evento
+    	and evento.id_menu = menu.id_menu
+    group by menu.nombre_menu;	
 
---11 Cuanto se ha pagado por evento.
+--11 Cuanto ha sido la suma total de dinero pagado, por cada evento. (enunciado modificado)
+select evento.nombre_evento "Eventos", sum(acceso.precio_acceso) "Suma total de dinero"
+    from evento, acceso, usuario, asiste
+	where usuario.dni_usuario = asiste.dni_usuario
+		and asiste.id_evento = evento.id_evento
+	group by evento.nombre_evento;
 
---12 En numero total de accesos de un usuario a la taquilla (agrupada).
+--12 Muestra las taquillas, junto a las veces que estan han sido utilizadas. (enunciado modificado)
+select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizó"
+    from taquilla, usuario, acceso
+	where usuario.dni_usuario = acceso.dni_usuario
+		and acceso.numero_taquilla = taquilla.numero_taquilla
+	group by taquilla.numero_taquilla
+    order by taquilla.numero_taquilla asc;
 
 --13 Cuantos tutores tiene un usuario.
+select us_tutor.nombre_usuario "Tutor", count(us_normal.dni_usuario) "Personas que tiene a cargo"
+	from usuario us_tutor, usuario us_normal, tiene
+	where us_tutor.dni_usuario = tiene.dni_usuario
+		and us_normal.dni_usuario = tiene.dni_usuario
+	group by us_tutor.nombre_usuario;
 
---14 Cuantos usuarios tiene alguien a su cargo.
+--14 ¿Y al revés? Muestra cuantos tutores tienen cada usuario. (enunciado modificado)
+select us_normal.nombre_usuario "Usuario", count(us_tutor.dni_usuario) "Personas que tiene de tutor"
+	from usuario us_normal, usuario us_tutor, tiene
+	where us_normal.dni_usuario = tiene.usu_dni_usuario
+		and us_tutor.dni_usuario = tiene.dni_usuario
+	group by us_normal.nombre_usuario;
 
 --15 Saca el numero de participantes que haya en cada evento con el nombre del evento.
+select evento.nombre_evento "Eventos", count(usuario.dni_usuario) "Usuarios asistentes"
+    from evento, usuario, asiste
+    where usuario.dni_usuario = asiste.dni_usuario
+    	and asiste.id_evento = evento.id_evento
+    group by evento.nombre_evento;
 
 --16 En cuantos eventos en total han participado cada animador (agrupada).
+select animacion.nombre_animador "Animadores", count(evento.id_evento) "Eventos en los que participa"
+     from animacion, evento, incluye
+     where animacion.dni_animador = incluye.dni_animador
+    	and evento.id_evento = incluye.id_evento 
+     group by animacion.nombre_animador;
 
---17 Saca descendentemente, los menus mas elegidos, con su cantidad de veces elegidas.
+--17 Saca, descendentemente, los menus junto a las veces que han sido escogidos.
+select menu.nombre_menu "Menús", count(usuario.dni_usuario) "Veces seleccionado"  
+    from usuario, menu, asiste, evento
+    where usuario.dni_usuario = asiste.dni_usuario
+    	and asiste.id_evento = evento.id_evento
+    	and evento.id_menu = menu.id_menu
+    group by menu.nombre_menu
+    order by count(usuario.dni_usuario) desc;	
 
---18 Saca ascendentemente, cuales son las taquillas menos seleccionadas, con su cantidad de veces seleccionada a personas.
+--18 Ahora, saca ascendentemente, las taquillas junto a su uso. (enunciado modificado)
+select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizo"
+    from taquilla, usuario, acceso
+	where usuario.dni_usuario = acceso.dni_usuario
+		and acceso.numero_taquilla = taquilla.numero_taquilla
+	group by taquilla.numero_taquilla
+	order by taquilla.numero_taquilla asc;
 
---19 Mostrar las alergias de los usuarios que hay en un evento, es decir, mostrar (agrupadas) los tipos de alergia que hay.
+--19 Mostrar las alergias de los usuarios que hay en un evento, es decir, mostrar (agrupadas) los tipos de alergia que hay. 
+select evento.nombre_evento "Eventos", count(usuario.alergias_usuario) "Número de alergias del evento"
+    from evento, usuario, asiste
+    where usuario.dni_usuario = asiste.dni_usuario
+    	and asiste.id_evento = evento.id_evento
+    group by evento.nombre_evento;
 
---20 Mostrar el precio medio de todos los eventos realizados.
+--20 Mostrar el precio medio de todos los eventos realizados. (mirar)
+select evento.nombre_evento "Eventos", avg(acceso.precio_acceso) "Media de precios"
+    from evento, acceso, usuario, asiste
+	where usuario.dni_usuario = asiste.dni_usuario
+		and asiste.id_evento = evento.id_evento
+	group by evento.nombre_evento;
 
---21 Mostrar el precio total de los eventos realizados.
+--21 Mostrar el precio total de los eventos realizados. (Cuantos animadores han sido contratados por evento)
 
 --22 Mostrar la media de precio de las personas que acceden a la zona de juego (juego libre).
+select zona_juegos.nombre_zonajuego "Zonas de juego", avg(acceso.precio_acceso) "Media de precios"
+    from acceso, zona_juegos
+	where zona_juegos.id_zonajuego = acceso.id_zonajuego
+	group by zona_juegos.nombre_zonajuego;
 
---23 Mostrar la taquilla más usada.
+--23 Muestra la taquilla más usada.  (mirar)
+select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizó"
+    from taquilla, usuario, acceso
+	where usuario.dni_usuario = acceso.dni_usuario
+		and acceso.numero_taquilla = taquilla.numero_taquilla
+	group by taquilla.numero_taquilla
+    	having (count(usuario.nombre_usuario)) = (max(count(usuario.nombre_usuario)));
 
---24 Mostrar los eventos junto a la cantidad de gente que fue, sin contar animadores.
+--24 Mostrar los eventos junto a toda la gente que participo y asistio, incluido animadores y personal. (enunciado modificado)
+select evento.nombre_evento "Eventos", (count(usuario.dni_usuario) + count(animacion.dni_animador) + count(personal.dni_personal)) "Gente que asistió"
+    from evento, usuario, asiste, animacion, incluye, acceso, zona_juegos, personal, trabaja
+    where usuario.dni_usuario = asiste.dni_usuario
+    	and asiste.id_evento = evento.id_evento
+	and animacion.dni_animador = incluye.dni_animador
+    	and evento.id_evento = incluye.id_evento
+	and acceso.id_zonajuego = zona_juegos.id_zonajuego 
+	and zona_juegos.id_zonajuego = trabaja.id_zonajuego
+	and personal.dni_personal = trabaja.dni_personal
+    group by evento.nombre_evento;
 
 -------ENUNCIADOS CONSULTAS (subconsultas)---------------
 
