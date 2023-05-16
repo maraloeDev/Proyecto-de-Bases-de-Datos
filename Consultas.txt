@@ -85,24 +85,60 @@ and evento.nombre_evento like 'Cumpleaños Juan';
 -------ENUNCIADOS CONSULTAS (subconsultas)---------------
 
 --25 Mostrar los eventos de un usuario especifico por nombre que no hayan contratado un menu especifico.
+select evento.* from usuario, reserva, corresponde, evento where usuario.nombre_usuario like '%Carlos%' 
+    and usuario.dni_usuario = reserva.dni_usuario and reserva.id_reserva = corresponde.id_reserva 
+    and corresponde.id_evento = evento.id_evento 
+    and evento.id_evento not in (select ofrece.id_evento from ofrece);
 
 --26 Mostrar los usuarios que no han reservado ningún evento.
+select usuario.* from usuario where usuario.dni_usuario 
+    not in (select reserva.dni_usuario from reserva);
 
 --27 Mostrar el usuario con mayor numero de eventos organizados.
+select usuario.nombre_usuario from usuario,reserva 
+where usuario.dni_usuario = reserva.dni_usuario 
+group by reserva.dni_usuario, usuario.nombre_usuario 
+having count(*) = (select max(count(*)) from reserva group by reserva.dni_usuario);
 
 --28 Mostrar al animador en el que más eventos ha animado.
+select animacion.nombre_animador from animacion,incluye
+where incluye.dni_animador = animacion.dni_animador
+group by incluye.dni_animador, animacion.nombre_animador 
+having count(*) = (select max(count(*)) from incluye group by incluye.dni_animador);
 
 --29 Mostrar el numero de taquilla de un usuario específico en una fecha determinada.
+select numero_taquilla from acceso 
+    where dni_usuario = (select dni_usuario from usuario where nombre_usuario like 'Belen Villa') 
+    and fecha_acceso = '07/MAY/2022';
 
 --30 Mostrar los usuarios que no han accedido, ni reservado, ningún evento
+select dni_usuario, nombre_usuario from usuario where dni_usuario not in (select dni_usuario from reserva) 
+    and not exists (select * from asiste,usuario where usuario.dni_usuario = asiste.dni_usuario);
 
 --31 Mostrar de los usuarios el nombre y sus tutores (nombre) que hayan tenido una taquilla en específico y hayan accedido por juego libre.
+select usu.nombre_usuario, tut.nombre_usuario, acceso.numero_taquilla 
+    from usuario usu,tiene,usuario tut,acceso where tut.dni_usuario = tiene.dni_usuario 
+    and usu.dni_usuario = tiene.usu_dni_usuario and acceso.dni_usuario = usu.dni_usuario;
 
 --32 Mostrar la información del menú que más se haya pedido en los eventos.
+select menu.*, count(*) "Numero de veces pedido" from menu,evento 
+    where evento.id_menu = menu.id_menu group by menu.id_menu, menu.nombre_menu, menu.precio_menu 
+    having count(*) = (select max(count(*)) from evento group by evento.id_menu)selec
 
 --33 Mostrar el menú que más se escogió en una fecha determinada, entrando por juego libre. 
+select menu.*, count(*) from acceso,menu where acceso.id_menu=menu.id_menu
+    and acceso.fecha_acceso = '07/MAY/2022'
+    group by menu.id_menu, menu.nombre_menu, menu.precio_menu
+    having count(*) in (select max(count(*)) from acceso 
+    					where acceso.fecha_acceso = '07/MAY/2022' group by id_menu);
 
 --34 Mostrar los menus que han escogido los usuarios menores de edad y que están tutorizados por 2 personas.
+/*METER DATOS GUACHIPIRULIS*/
+select * from acceso,usuario where acceso.dni_usuario = usuario.dni_usuario 
+    and usuario.dni_usuario in (select usu.dni_usuario 
+    from usuario usu, tiene, usuario tut where usu.dni_usuario = tiene.usu_dni_usuario 
+    and tiene.dni_usuario = tut.dni_usuario group by tut.dni_usuario, usu.dni_usuario having count(*) = 2);
+
 
 ------ENUNCIADOS CONSULTAS (Outer Join)---------------
 
