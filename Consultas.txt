@@ -1,33 +1,45 @@
 ---------ENUNCIADOS CONSULTAS (join)---------------
 
--- 1 Que taquillas se han dado con un numero de acceso a Carlos
+-- 1 Qué taquillas se han dado con un número de acceso a Carlos.
 select distinct acceso.numero_taquilla, usuario.nombre_usuario
 from acceso, usuario
 where acceso.dni_usuario = usuario.dni_usuario
 and usuario.nombre_usuario like '%Carlos%';
 
--- 2 Que usuarios han hecho una reserva y que dia
+-- 2 Qué usuarios han hecho una reserva y qué día.
 select distinct usuario.nombre_usuario, to_char(reserva.fecha_reserva, 'Day') "Dia"
 from usuario,reserva
 where usuario.dni_usuario = reserva.dni_usuario;
 
--- 3 Sacar del animador Paco en qué eventos ha participado y la fecha cuando tuvo lugar. (animador tenga un numero de sala al que asistir)
+--está revisada con el número del día (luego lo hablamos).
+select distinct usuario.nombre_usuario, to_char(reserva.fecha_reserva, 'dd') "Dia"
+from usuario,reserva
+where usuario.dni_usuario = reserva.dni_usuario;
+
+-- 3 Sacar del animador Paco en qué eventos ha participado y la fecha cuando tuvo lugar.
 select distinct animacion.nombre_animador, evento.nombre_evento,evento.fecha_evento
 from animacion,evento, acceso
 where evento.fecha_evento = acceso.fecha_acceso
 and animacion.nombre_animador like 'Paco%';
 
--- 4 Que usuarios han escogido un menu especificado en un mes.
+-- 4 Qué usuarios han escogido un menú específico en un mes.
 select distinct usuario.nombre_usuario, menu.nombre_menu, to_char (acceso.fecha_acceso, 'Day') "Dia"
 from usuario, menu, acceso
 where usuario.dni_usuario =  acceso.dni_usuario 
 and menu.nombre_menu like 'Menu Rojo'
 and acceso.fecha_acceso between '01-may-22' and '31-may-22';
 
--- 5 Que usuarios han accedido mediante reserva a la taquilla.
-select distinct usuario.nombre_usuario
-from acceso, usuario, reserva
-where  acceso.dni_usuario = usuario.dni_usuario;
+--a mi me queda más claro esto y es más reutilizable (volvi a cambiar lo de los días)
+select distinct usuario.nombre_usuario, menu.nombre_menu, to_char (acceso.fecha_acceso, 'dd') "Dia"
+from usuario, menu, acceso
+where usuario.dni_usuario =  acceso.dni_usuario 
+and menu.nombre_menu like 'Menu Rojo'
+and to_char(acceso.fecha_acceso,'MM') like '05';
+
+-- 5 Que usuarios han accedido mediante reserva a la taquilla. (esta está mal pero el enunciao)
+--select distinct usuario.nombre_usuario
+--from acceso, usuario, reserva
+--where  acceso.dni_usuario = usuario.dni_usuario;
 
 -- 6 Mostrar los usuarios que han tenido un evento en un fecha determinada.
 select distinct usuario.nombre_usuario, evento.nombre_evento, evento.numero_sala,evento.fecha_evento
@@ -35,12 +47,30 @@ from usuario, evento, acceso
 where evento.fecha_evento = acceso.fecha_acceso
 and evento.fecha_evento like '12-MAR-22';
 
--- 7 Mostrar la informacion de los monitores que trabajen en la zona de juego denominada volcan.
+--no está bien
+--CORREGIDA
+select usuario.nombre_usuario, evento.nombre_evento, evento.fecha_evento 
+from usuario, evento, asiste
+where usuario.dni_usuario = asiste.dni_usuario and asiste.id_evento = evento.id_evento
+and evento.fecha_evento like '15-FEB-22';
+
+
+-- 7 Mostrar la informacion de los monitores que trabajen en la zona de juego denominada 'VOLCAN'.
 select distinct personal.nombre_personal, zona_juegos.nombre_zonajuego
 from zona_juegos, personal, acceso
 where zona_juegos.id_zonajuego = acceso.id_zonajuego
 and personal.puesto_personal like 'MONITOR'
 and  zona_juegos.nombre_zonajuego like 'VOLCAN';
+
+--CORREGIDA
+select distinct personal.nombre_personal, personal.telefono_personal, personal.correo_personal, 
+    personal.direccion_personal, zona_juegos.nombre_zonajuego
+from zona_juegos, personal, trabaja
+where zona_juegos.id_zonajuego = trabaja.id_zonajuego
+and trabaja.dni_personal = personal.dni_personal
+and personal.puesto_personal like 'MONITOR'
+and zona_juegos.nombre_zonajuego like 'VOLCAN';
+
 
 --8 Mostrar los usuarios del evento 'Cumpleaños Juan'
 select distinct usuario.nombre_usuario,evento.nombre_evento
@@ -48,9 +78,20 @@ from usuario, evento, acceso
 where usuario.dni_usuario = acceso.dni_usuario
 and evento.nombre_evento like 'Cumpleaños Juan';
 
+--esta es un puto desastre
+--CORREGIDA
+select distinct usuario.nombre_usuario,evento.nombre_evento
+from usuario, evento, asiste
+where usuario.dni_usuario = asiste.dni_usuario
+and asiste.id_evento = evento.id_evento
+and evento.nombre_evento like 'Cumpleaños Juan';
+
+
 -------ENUNCIADOS CONSULTAS (agrupadas)---------------
 
 --9 Saca cuantas taquillas han sido seleccionadas a personas que no han ido a un evento.
+--el enunciado está raruno
+-- Saca cuantas taquillas se han utilizado en juego libre (tabla acceso).
 select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizo"
     from taquilla, usuario, acceso
 	where usuario.dni_usuario = acceso.dni_usuario
@@ -59,13 +100,31 @@ select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Vece
     					where usuario.dni_usuario = asiste.dni_usuario)
 	group by taquilla.numero_taquilla;
 
+--sobraba la subconsulta
+--CORREGIDA
+select taquilla.numero_taquilla "Taquilla", count(usuario.dni_usuario) "Veces que se utilizo"
+    from taquilla, usuario, acceso
+	where usuario.dni_usuario = acceso.dni_usuario
+		and acceso.numero_taquilla = taquilla.numero_taquilla
+	group by taquilla.numero_taquilla;
+
+
 --10 Saca cuantas personas han escogido cada menu, mediante agrupacion (group by). (enunciado modificado)
 select menu.nombre_menu "Menús", count(usuario.dni_usuario) "Veces seleccionado"  
     from usuario, menu, asiste, evento
     where usuario.dni_usuario = asiste.dni_usuario
     	and asiste.id_evento = evento.id_evento
     	and evento.id_menu = menu.id_menu
-    group by menu.nombre_menu;	
+    group by menu.nombre_menu;
+
+--aqui creo que se refiere a juego libre, ya que la gente cuando va a un evento no puede escoger menu
+--es el que toca
+--CORREGIDO
+select menu.nombre_menu "Menús", count(usuario.dni_usuario) "Veces seleccionado"  
+    from usuario, menu, acceso
+    where usuario.dni_usuario = acceso.dni_usuario
+    	and acceso.id_menu = menu.id_menu
+    group by menu.nombre_menu;
 
 --11 Cuanto ha sido la suma total de dinero pagado, por cada evento. (enunciado modificado)
 select evento.nombre_evento "Eventos", sum(acceso.precio_acceso) "Suma total de dinero"
@@ -73,6 +132,13 @@ select evento.nombre_evento "Eventos", sum(acceso.precio_acceso) "Suma total de 
 	where usuario.dni_usuario = asiste.dni_usuario
 		and asiste.id_evento = evento.id_evento
 	group by evento.nombre_evento;
+--CORREGIDO
+select evento.nombre_evento "Eventos", menu.precio_menu*count(usuario.dni_usuario) "Suma total de dinero"
+    from evento, usuario, asiste, menu
+	where usuario.dni_usuario = asiste.dni_usuario
+		and asiste.id_evento = evento.id_evento
+    	and evento.id_menu = menu.id_menu
+	group by evento.id_evento,evento.nombre_evento, menu.precio_menu;
 
 --12 Muestra las taquillas, junto a las veces que estan han sido utilizadas. (enunciado modificado)
 select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizó"
@@ -82,12 +148,17 @@ select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Vece
 	group by taquilla.numero_taquilla
     order by taquilla.numero_taquilla asc;
 
---13 Cuantos tutores tiene un usuario.
+--muy parecida que la 9 (meditamos si quitarla)
+
+
+--13 Muestra cuántos tutores tiene un usuario.
 select us_tutor.nombre_usuario "Tutor", count(us_normal.dni_usuario) "Personas que tiene a cargo"
 	from usuario us_tutor, usuario us_normal, tiene
 	where us_tutor.dni_usuario = tiene.dni_usuario
 		and us_normal.dni_usuario = tiene.dni_usuario
 	group by us_tutor.nombre_usuario;
+--están al revés creo
+--NUNCA agrupar por nombre, hay que agrupar por la PRIMARY KEY
 
 --14 ¿Y al revés? Muestra cuantos tutores tienen cada usuario. (enunciado modificado)
 select us_normal.nombre_usuario "Usuario", count(us_tutor.dni_usuario) "Personas que tiene de tutor"
@@ -101,16 +172,17 @@ select evento.nombre_evento "Eventos", count(usuario.dni_usuario) "Usuarios asis
     from evento, usuario, asiste
     where usuario.dni_usuario = asiste.dni_usuario
     	and asiste.id_evento = evento.id_evento
-    group by evento.nombre_evento;
+    group by evento.id_evento, evento.nombre_evento;
 
 --16 En cuantos eventos en total han participado cada animador (agrupada).
 select animacion.nombre_animador "Animadores", count(evento.id_evento) "Eventos en los que participa"
      from animacion, evento, incluye
      where animacion.dni_animador = incluye.dni_animador
     	and evento.id_evento = incluye.id_evento 
-     group by animacion.nombre_animador;
+     group by animacion.dni_animador, animacion.nombre_animador;
 
 --17 Saca, descendentemente, los menus junto a las veces que han sido escogidos.
+-- esta es complicadilla (la reviso bien)
 select menu.nombre_menu "Menús", count(usuario.dni_usuario) "Veces seleccionado"  
     from usuario, menu, asiste, evento
     where usuario.dni_usuario = asiste.dni_usuario
@@ -133,6 +205,15 @@ select evento.nombre_evento "Eventos", count(usuario.alergias_usuario) "Número 
     where usuario.dni_usuario = asiste.dni_usuario
     	and asiste.id_evento = evento.id_evento
     group by evento.nombre_evento;
+--sacas la cuenta e interesa saber cuáles son
+--CORREGIDO
+select evento.nombre_evento "Eventos", usuario.alergias_usuario 
+    from evento, usuario, asiste
+    where usuario.dni_usuario = asiste.dni_usuario
+    	and asiste.id_evento = evento.id_evento
+    group by evento.id_evento, evento.nombre_evento, usuario.alergias_usuario
+    order by evento.id_evento;
+--esta está mejor pero no del tutto bien
 
 --20 Mostrar el precio medio de todos los eventos realizados. (mirar)
 select evento.nombre_evento "Eventos", avg(acceso.precio_acceso) "Media de precios"
@@ -141,7 +222,17 @@ select evento.nombre_evento "Eventos", avg(acceso.precio_acceso) "Media de preci
 		and asiste.id_evento = evento.id_evento
 	group by evento.nombre_evento;
 
---21 Mostrar el precio total de los eventos realizados. (Cuantos animadores han sido contratados por evento)
+--CORREGIDO
+select avg(menu.precio_menu*count(usuario.dni_usuario)) "Media de precios"
+    from evento, usuario, asiste, menu
+	where usuario.dni_usuario = asiste.dni_usuario
+		and asiste.id_evento = evento.id_evento
+    	and evento.id_menu = menu.id_menu
+    group by evento.id_evento, menu.precio_menu;
+
+--21 Mostrar el precio total de los eventos realizados. (Cuantos animadores han sido contratados por evento?????)
+
+
 
 --22 Mostrar la media de precio de las personas que acceden a la zona de juego (juego libre).
 select zona_juegos.nombre_zonajuego "Zonas de juego", avg(acceso.precio_acceso) "Media de precios"
