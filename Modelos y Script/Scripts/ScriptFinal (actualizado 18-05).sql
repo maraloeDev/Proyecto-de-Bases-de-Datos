@@ -216,9 +216,6 @@ insert into ASISTE (ID_EVENTO, DNI_USUARIO)
             values (1,'57416696W');
 
 insert into ASISTE (ID_EVENTO, DNI_USUARIO) 
-            values (1,'75298117G');
-
-insert into ASISTE (ID_EVENTO, DNI_USUARIO) 
             values (1,'52982197H');
 
 insert into ASISTE (ID_EVENTO, DNI_USUARIO) 
@@ -232,9 +229,6 @@ insert into ASISTE (ID_EVENTO, DNI_USUARIO)
 
 insert into ASISTE (ID_EVENTO, DNI_USUARIO) 
             values (2,'02330065G');
-
-insert into ASISTE (ID_EVENTO, DNI_USUARIO) 
-            values (2,'75298117G');
 
 insert into ASISTE (ID_EVENTO, DNI_USUARIO) 
             values (2,'18289601R');
