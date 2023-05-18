@@ -263,10 +263,9 @@ select evento.nombre_evento "Eventos", (count(usuario.dni_usuario) + count(anima
 -------ENUNCIADOS CONSULTAS (subconsultas)---------------
 
 --25 Mostrar los eventos de un usuario especifico por nombre que no hayan contratado un menu especifico.
-select evento.* from usuario, reserva, corresponde, evento where usuario.nombre_usuario like '%Carlos%' 
-    and usuario.dni_usuario = reserva.dni_usuario and reserva.id_reserva = corresponde.id_reserva 
-    and corresponde.id_evento = evento.id_evento 
-    and evento.id_evento not in (select ofrece.id_evento from ofrece);
+select evento.* from usuario, reserva, evento where usuario.nombre_usuario like '%Carlos%' 
+    and usuario.dni_usuario = reserva.dni_usuario and reserva.id_evento = evento.id_evento 
+    and evento.id_evento in (select evento.id_evento from evento where evento.id_menu = 0);
 
 --26 Mostrar los usuarios que no han reservado ningún evento.
 select usuario.* from usuario where usuario.dni_usuario 
@@ -291,20 +290,21 @@ select numero_taquilla from acceso
 
 --30 Mostrar los usuarios que no han accedido, ni reservado, ningún evento
 select dni_usuario, nombre_usuario from usuario where dni_usuario not in (select dni_usuario from reserva) 
-    and not exists (select * from asiste,usuario where usuario.dni_usuario = asiste.dni_usuario);
+    and dni_usuario not in (select dni_usuario from asiste);
 
 --31 Mostrar de los usuarios el nombre y sus tutores (nombre) que hayan tenido una taquilla en específico y hayan accedido por juego libre.
-select usu.nombre_usuario, tut.nombre_usuario, acceso.numero_taquilla 
+select usu.nombre_usuario "Usuario", tut.nombre_usuario "Tutor", acceso.numero_taquilla 
     from usuario usu,tiene,usuario tut,acceso where tut.dni_usuario = tiene.dni_usuario 
-    and usu.dni_usuario = tiene.usu_dni_usuario and acceso.dni_usuario = usu.dni_usuario;
+    and usu.dni_usuario = tiene.usu_dni_usuario and acceso.dni_usuario = usu.dni_usuario
+	and acceso.numero_taquilla = 2;
 
 --32 Mostrar la información del menú que más se haya pedido en los eventos.
 select menu.*, count(*) "Numero de veces pedido" from menu,evento 
     where evento.id_menu = menu.id_menu group by menu.id_menu, menu.nombre_menu, menu.precio_menu 
-    having count(*) = (select max(count(*)) from evento group by evento.id_menu)selec
+    having count(*) = (select max(count(*)) from evento group by evento.id_menu);
 
 --33 Mostrar el menú que más se escogió en una fecha determinada, entrando por juego libre. 
-select menu.*, count(*) from acceso,menu where acceso.id_menu=menu.id_menu
+select menu.*, count(*) "Veces escogido" from acceso,menu where acceso.id_menu=menu.id_menu
     and acceso.fecha_acceso = '07/MAY/2022'
     group by menu.id_menu, menu.nombre_menu, menu.precio_menu
     having count(*) in (select max(count(*)) from acceso 
@@ -321,21 +321,53 @@ select * from acceso,usuario where acceso.dni_usuario = usuario.dni_usuario
 ------ENUNCIADOS CONSULTAS (Outer Join)---------------
 
 --35 Mostrar todos los usuarios junto al nombre de los que tienen a su cargo, mostrando también los que no tienen ninguno a su cargo.
+select usu.*, tut.nombre_usuario "TUTOR" from usuario usu, usuario tut, tiene 
+where usu.dni_usuario (+) = tiene.usu_dni_usuario and tut.dni_usuario = tiene.dni_usuario (+);
 
 --36 Mostrar la informacion sobre el menu y los animadores junto a cada evento, mostrando 'Sin animador' si no ha habido animación.
+select evento.nombre_evento, menu.nombre_menu, nvl(animacion.nombre_animador,'Sin animador') 
+    from menu, animacion, evento, incluye where evento.id_menu = menu.id_menu 
+    and evento.id_evento = incluye.id_evento (+) and incluye.dni_animador = animacion.dni_animador (+);
 
 --37 Mostrar los eventos que hayan sido cumpleaños.
+select evento.nombre_evento from evento where evento.es_cumple = 1;
+--se nos ha colado esta es una consulta normal
+
 
 -------ENUNCIADOS CONSULTAS (Inserciones)---------------
 
 --38 Insertar en una nueva tabla ALERGIAS, las alergias de los usuarios sin repetir.
+drop table alergias;
+create table alergias (
+  alergia	varchar2(50)
+);
 
---39 Insertar un nuevo monitor con el nombre Julián Álvarez que viva en la misma calle que Juan Pérez.
+insert into alergias (alergia) 
+select nvl(usuario.alergias_usuario, 'Sin alergia')
+    from usuario
+	group by usuario.alergias_usuario;
+
+select * from alergias;
+
+--39 Insertar un nuevo monitor con el nombre Julián Álvarez que viva en la misma calle que Juan Garcia.
+insert into animacion 
+values ('22944295R', 'Julián Álvarez', '655766877', (select direccion_animador from animacion where nombre_animador like 'Juan Garcia'));
 
 -------ENUNCIADOS CONSULTAS (Updates)---------------
 
 --40 Todos los usuarios que no tengan ninguna alergia, actualizan su valor a ‘Sin Alergia’.
+update usuario
+set alergias_usuario = nvl(alergias_usuario, 'Sin Alergia');
 
 --41 Subir el precio del menú menos vendido en los eventos un 5 %.
+update menu
+    set precio_menu = precio_menu*1.05
+    where id_menu in (select menu.id_menu from menu, evento
+						where evento.id_menu = menu.id_menu
+    					group by menu.id_menu, menu.nombre_menu
+    					having count(*) = (select min(count(*)) from evento group by id_menu));
 
 --42 Aplazar la fecha de un evento especificado 1 semana.
+update evento
+set fecha_evento = fecha_evento + 7
+where id_evento = 7;
