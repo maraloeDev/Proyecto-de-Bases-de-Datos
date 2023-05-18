@@ -234,19 +234,19 @@ select avg(menu.precio_menu*count(usuario.dni_usuario)) "Media de precios"
 
 
 
---22 Mostrar la media de precio de las personas que acceden a la zona de juego (juego libre).
-select zona_juegos.nombre_zonajuego "Zonas de juego", avg(acceso.precio_acceso) "Media de precios"
-    from acceso, zona_juegos
-	where zona_juegos.id_zonajuego = acceso.id_zonajuego
-	group by zona_juegos.nombre_zonajuego;
+--22 Mostrar la media de precio de las personas que acceden a cada zona de juego (juego libre).
+select zona_juegos.nombre_zonajuego "Zonas", avg(acceso.precio_acceso) "Media"
+from zona_juegos, acceso
+where zona_juegos.id_zonaJuego = acceso.id_zonajuego
+    group by zona_juegos.id_zonajuego, zona_juegos.nombre_zonajuego;
 
 --23 Muestra la taquilla más usada.  (mirar)
-select taquilla.numero_taquilla "Taquillas", count(usuario.nombre_usuario) "Veces que se utilizó"
-    from taquilla, usuario, acceso
-	where usuario.dni_usuario = acceso.dni_usuario
-		and acceso.numero_taquilla = taquilla.numero_taquilla
-	group by taquilla.numero_taquilla
-    	having (count(usuario.nombre_usuario)) = (max(count(usuario.nombre_usuario)));
+select taquilla.numero_taquilla, count(*) from taquilla, acceso 
+    where taquilla.numero_taquilla = acceso.numero_taquilla 
+    group by taquilla.numero_taquilla
+    having count(*) = (select max(count(*)) from taquilla, acceso 
+    where taquilla.numero_taquilla = acceso.numero_taquilla 
+    group by taquilla.numero_taquilla);
 
 --24 Mostrar los eventos junto a toda la gente que participo y asistio, incluido animadores y personal. (enunciado modificado)
 select evento.nombre_evento "Eventos", (count(usuario.dni_usuario) + count(animacion.dni_animador) + count(personal.dni_personal)) "Gente que asistió"
