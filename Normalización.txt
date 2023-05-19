@@ -1,0 +1,1 @@
+1FN La tabla usuario, en la tabla USUARIO la columna de ALERGIAS_USUARIO no es atomica  
