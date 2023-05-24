@@ -21,11 +21,6 @@ Eduardo
 		R4 Guardar el personal como equipo de cocina o monitores y cada uno con su nombre, telefono, mail, dni y direccion
 
 		R5 Se almacena el menu escogido por el niño,que va al recinto
+		R7 Un niño puede ir a una zona de juego aunque no haya ningun evento
  
-5		Aqui tenemos el esquema Entidad Relación donde observamos que la entidad USUARIO tiene una relacion  reflexiva, debido a que el usuario puede ser un niño o un padre)
-
-6		Este es el modelo realcional, una vez hecho este modelo, mi compañero Noel, os explicara la teoria de la normalización, y los diferentes casos a normalizar
-
-Noel
-
-Mario
+5		Aqui tenemos el esquema Entidad Relación donde observamos que la entidad USUARIO tiene una relacion  reflexiva, debido a que el usuario puede ser un tutor o un tutelado)
