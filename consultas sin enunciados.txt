@@ -1,0 +1,97 @@
+---------ENUNCIADOS CONSULTAS (join)---------------
+
+-- 1 Qué taquillas se han dado con un número de acceso a Carlos.
+
+-- 2 Qué usuarios han hecho una reserva y qué día.
+
+
+-- 3 Sacar del animador Paco en qué eventos ha participado y la fecha cuando tuvo lugar.
+
+
+-- 4 Qué usuarios han escogido un menú específico en un mes.
+
+
+-- 6 Mostrar los usuarios que han tenido un evento en un fecha determinada.
+
+
+-- 7 Mostrar la informacion de los monitores que trabajen en la zona de juego denominada 'VOLCAN'.
+
+
+--8 Mostrar los usuarios del evento 'Cumpleaños Juan'
+
+
+
+-------ENUNCIADOS CONSULTAS (agrupadas)---------------
+
+--9 Saca cuantas taquillas han sido seleccionadas a personas que no han ido a un evento.
+
+
+--10 Saca cuantas personas han escogido cada menu, mediante agrupacion (group by). (enunciado modificado)
+
+--11 Cuanto ha sido la suma total de dinero pagado, por cada evento. (enunciado modificado)
+
+--12 Muestra cuántos tutores tiene un usuario.
+
+--13 ¿Y al revés? Muestra cuantos tutores tienen cada usuario. (enunciado modificado)
+
+--14 Saca el numero de participantes que haya en cada evento con el nombre del evento.
+
+--15 En cuantos eventos en total han participado cada animador (agrupada).
+
+--16 Saca, descendentemente, los menus junto a las veces que han sido escogidos.
+
+--17 Ahora, saca ascendentemente, las taquillas junto a su uso. (enunciado modificado)
+
+--18 Mostrar las alergias de los usuarios que hay en un evento, es decir, mostrar (agrupadas) los tipos de alergia que hay. 
+
+--19 Mostrar el precio medio de todos los eventos realizados.
+
+--20 Mostrar el precio total de los eventos realizados.
+
+--21 Mostrar la media de precio de las personas que acceden a cada zona de juego (juego libre).
+
+--22 Muestra la taquilla más usada.
+
+--23 Mostrar los eventos junto a toda la gente que participo y asistio, incluido animadores y personal. (enunciado modificado)
+
+-------ENUNCIADOS CONSULTAS (subconsultas)---------------
+
+--24 Mostrar los eventos de un usuario especifico por nombre que no hayan contratado un menu especifico.
+
+--25 Mostrar los usuarios que no han reservado ningún evento.
+
+--26 Mostrar el usuario con mayor numero de eventos organizados.
+
+--27 Mostrar al animador en el que más eventos ha animado.
+
+--28 Mostrar el numero de taquilla de un usuario específico en una fecha determinada.
+
+--29 Mostrar los usuarios que no han accedido, ni reservado, ningún evento
+
+--30 Mostrar de los usuarios el nombre y sus tutores (nombre) que hayan tenido una taquilla en específico y hayan accedido por juego libre.
+
+--31 Mostrar la información del menú que más se haya pedido en los eventos.
+
+--32 Mostrar el menú que más se escogió en una fecha determinada, entrando por juego libre. 
+
+--33 Mostrar los menus que han escogido los usuarios menores de edad y que están tutorizados por 2 personas.
+
+------ENUNCIADOS CONSULTAS (Outer Join)---------------
+
+--34 Mostrar todos los usuarios junto al nombre de los que tienen a su cargo, mostrando también los que no tienen ninguno a su cargo.
+
+--35 Mostrar la informacion sobre el menu y los animadores junto a cada evento, mostrando 'Sin animador' si no ha habido animación.
+
+-------ENUNCIADOS CONSULTAS (Inserciones)---------------
+
+--36 Insertar en una nueva tabla ALERGIAS, las alergias de los usuarios sin repetir.
+
+--37 Insertar un nuevo monitor con el nombre Julián Álvarez que viva en la misma calle que Juan Garcia.
+
+-------ENUNCIADOS CONSULTAS (Updates)---------------
+
+--38 Todos los usuarios que no tengan ninguna alergia, actualizan su valor a ‘Sin Alergia’.
+
+--39 Subir el precio del menú menos vendido en los eventos un 5 %.
+
+--40 Aplazar la fecha de un evento especificado 1 semana.
