@@ -1,0 +1,41 @@
+1FN: Para que una tabla esté en primera forma normal tiene que cumplir 3 requisitos:
+• Cada columna es atómica.
+• Un solo valor en cada fila.
+• No hay grupos repetitivos.
+2FN: Para que pase a estar en segunda forma normal tiene que estar en primera forma normal y
+que cada columna no clave dependa funcionalmente de forma completa de cualquiera de las
+claves.
+3FN: Para que esté en tercera forma normal tiene que estar en segunda forma normal y que
+ningún atributo que no sea clave dependa transitivamente de las claves de la tabla.
+SOLUCIÓN
+1FN: La tabla USUARIO en la columna de alergias_usuario no tiene un solo valor en cada fila,
+debido a que se puede descomponer en varias alergias.
+La solución consiste en crear una nueva tabla ALERGIA_USUARIO para separar los datos.
+Además, se crearía una nueva tabla de la relación llamada ES_ALERGICO ya que un usuario
+puede tener varias alergias y las alergias pueden pertenecer a varios usuarios.
+USUARIO (dni_usuario(PK), nombre_usuario, telefono_usuario,
+correo_usuario,direccion_usuario, alergias_usuario,
+fecha_nacimiento_usuario)
+La tabla USUARIO pasa a ser:
+USUARIO (dni_usuario (PK), nombre_usuario, telefono_usuario,
+correo_usuario,direccion_usuario, fecha_nacimiento_usuario)
+Se crea la nueva tabla ALERGIAS:
+ALERGIAS (id_alergia (PK), nombre_alergia)
+Y una tabla de la relación (varios a varios) ES_ALERGICO (dni_usuario (FK) +
+id_alergia(FK) (PK))
+1FN: La tabla USUARIO en la columna de nombre_usuario y direccion_usuario no son atómicas
+ya que se pueden descomponer.
+• nombre_usuario: nombre_usuario y direccion_usuario
+• direccion_usuario: nombre_calle, numero_calle y detalles_calle
+La solución consiste en separar los datos en nuevos campos.
+Esta solución es aplicable a todos los campos de la base de datos donde haya nombre de
+personas y direcciones, resolviéndolo de manera análoga.
+USUARIO (dni_usuario (PK), nombre_usuario, telefono_usuario,
+correo_usuario,direccion_usuario, fecha_nacimiento_usuario)
+La tabla USUARIO pasa a ser:
+USUARIO (dni_usuario (PK), nombre_usuario, apellidos_usuario, telefono_usuario,
+correo_usuario, nombre_calle, numero_calle, detalles_calle, fecha_nacimiento_usuario)
+
+El resto de las tablas llegan a tercera forma normal (explicar una si veo a macarena cara pocha)
+
+(Puedo explicar el diccionario de datos yo)
