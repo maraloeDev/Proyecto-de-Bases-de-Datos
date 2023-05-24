@@ -5,24 +5,24 @@ Eduardo
 1 	Buenos días, somos Mario Ortúñez, Noel Prieto y Eduardo Martín-Sonseca, y hoy os vamos a presentar nuestra defensa del Proyecto de Bases de datos
 
 
-2    	Que es lo que se vera en esta Defensa...?? empezaremos haciendo una breve explicación sobre el "Problema" que nos han planteado, y realizaremos lo visto en estos trimestres (conceptual,lógico y fisico), despues continuaremos con las consultas, y acabaremos con lo recursos.
-
+2    	Que es lo que se vera en esta Defensa...?? empezaremos haciendo una breve introducción al "Problema" que nos han planteado, 
+	y realizaremos lo visto en estos trimestres (conceptual,lógico y fisico), despues continuaremos con las consultas, y acabaremos con lo recursos.
+ 
 3 	Comenzemos, nuestro objetivo en este proyecto, ha sido la realización de una base de datos desde 0 basada en el modelo de negocio del "DragonVall".
 
 4		En este proyecto, hemos recabado los 5 requisitos mas importantes de los 16 que tenemos :
-		R1 se desea almacenar los usuarios con un nombre completo, alergia, año de nacimiento, telefono y mail, 
+		R1 se desea almacenar los usuarios con un nombre completo, alergia, año de nacimiento, dirección, telefono y mail, 
 
-		R2 los eventos, con elnombre de la persona a organizar, en nombre del evento, sufecha de reserva,
-		cuando se organizara el evento, y las personas que van a acuir al mismo
+		R2 los eventos, con el nombre de la persona a organizar, en nombre del evento, su fecha de reserva,
+		cuando se organizara el evento, y las personas que van a acudir al mismo
 
-		R3 El numero de taquilla asiociado al niño que accede al recionto (Zona de juegos) 
+		R3 El numero de taquilla asiociado al niño que accede al recinto (Zona de juegos) 
 
 		R4 Guardar el personal como equipo de cocina o monitores y cada uno con su nombre, telefono, mail, dni y direccion
 
 		R5 Se almacena el menu escogido por el niño,que va al recinto
  
-5		Este es el modelo Entidad Relación conpuesto por 9 enidades y 10 relaciones 
-		La Entidad denominada USUARIO es reflexiva, debido a que el usuario puede ser un niño o un padre)
+5		Aqui tenemos el esquema Entidad Relación donde observamos que la entidad USUARIO tiene una relacion  reflexiva, debido a que el usuario puede ser un niño o un padre)
 
 6		Este es el modelo realcional, una vez hecho este modelo, mi compañero Noel, os explicara la teoria de la normalización, y los diferentes casos a normalizar
 
