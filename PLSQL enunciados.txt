@@ -1,0 +1,10 @@
+---------------FUNCIONES--------------------
+--1. Devuelve el numero de asistentes en un dia concreto pasado como parametro
+
+--2. Una funcion que te muestra las medias por cada tipo de menu en un mes pasado como parametro y te devuelve la suma final de ese mes.
+
+---------------PROCEDURES--------------------
+
+--1. Un procedimiento que añade un usuario con los datos pasados como parametro
+
+--2. Procedimiento que te imprime los meses de las fechas de acceso en español
